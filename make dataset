@@ -1,3 +1,13 @@
+
+import json
+
+data = []
+with open('your_file.json', 'r', encoding='utf-8') as f:
+    for line in f:
+        data.append(json.loads(line))
+
+
+
 from difflib import SequenceMatcher
 import json
 
