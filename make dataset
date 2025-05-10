@@ -1,0 +1,25 @@
+from difflib import SequenceMatcher
+import json
+
+# Load JSON
+with open('your_data.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+# Group by trg, keeping best src based on similarity
+from collections import defaultdict
+
+best_entries = {}
+scores = defaultdict(float)
+
+for entry in data:
+    trg = entry['trg']
+    src = entry['src']
+    sim = SequenceMatcher(None, src, trg).ratio()
+
+    if sim > scores[trg]:
+        scores[trg] = sim
+        best_entries[trg] = entry
+
+# Save results
+with open('best_data.json', 'w', encoding='utf-8') as f:
+    json.dump(list(best_entries.values()), f, ensure_ascii=False, indent=2)
