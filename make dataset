@@ -1,3 +1,50 @@
+
+import json
+import random
+
+# Config
+input_file = 'data.json'       # your source JSON file
+train_file = 'train.jsonl'
+valid_file = 'valid.jsonl'
+test_file  = 'test.jsonl'
+
+train_ratio = 0.8
+valid_ratio = 0.1
+test_ratio  = 0.1
+
+# Load the data
+with open(input_file, 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+# If data is inside a key like {"data": [...]}, extract it
+if isinstance(data, dict):
+    data = data.get("data", [])
+
+# Shuffle and split
+random.shuffle(data)
+total = len(data)
+train_end = int(total * train_ratio)
+valid_end = train_end + int(total * valid_ratio)
+
+train_data = data[:train_end]
+valid_data = data[train_end:valid_end]
+test_data  = data[valid_end:]
+
+# Save to .jsonl files
+def save_jsonl(filename, items):
+    with open(filename, 'w', encoding='utf-8') as f:
+        for item in items:
+            f.write(json.dumps(item, ensure_ascii=False) + '\n')
+
+save_jsonl(train_file, train_data)
+save_jsonl(valid_file, valid_data)
+save_jsonl(test_file, test_data)
+
+
+
+
+#How to save json in a {} \n {}... format
+
 # Load standard JSON list
 with open('input.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
@@ -6,14 +53,6 @@ with open('input.json', 'r', encoding='utf-8') as f:
 with open('output.jsonl', 'w', encoding='utf-8') as f:
     for item in data:
         json.dump(item, f, ensure_ascii=False)
-        f.write('\n')
-
-import json
-
-# Assume `data` is a list of dictionaries
-with open('output.jsonl', 'w', encoding='utf-8') as f:
-    for entry in data:
-        json.dump(entry, f, ensure_ascii=False)
         f.write('\n')
 
 
